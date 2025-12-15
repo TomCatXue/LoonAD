@@ -1,0 +1,14 @@
+# ======================================
+# Alipay MiniProgram FlowAd Killer (Remote)
+# GitHub 远程 JS
+# ======================================
+
+[Plugin]
+name = Alipay FlowAd Killer REMOTE
+desc = GitHub远程JS，移除支付宝小程序三种流量位广告
+version = 1.0
+author = github
+mitm = *.alipay.com,*.alipayobjects.com
+
+[Script]
+http-response ^https:\/\/.*\.alipay\.com\/.* type=js requires-body=true timeout=10 script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/refs/heads/main/alipay_flowad_killer.js
