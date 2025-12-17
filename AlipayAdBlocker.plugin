@@ -1,0 +1,76 @@
+[General]
+# 支付宝广告屏蔽插件 - 完整版
+# 更新时间：2024-01-10
+# 图标地址：https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
+
+name = 支付宝广告屏蔽
+desc = 屏蔽支付宝小程序、灯火平台、流量位插件、淘宝联盟、1688分销客等所有广告
+author = AdBlocker
+version = 2.0.0
+icon = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
+update = 2024-01-10
+
+[MITM]
+enable = true
+hostname = 
+*.alipay.com,
+*.alipayobjects.com,
+*.alipay.net,
+*.alibaba.com,
+*.taobao.com,
+*.tmall.com,
+*.1688.com,
+*.alimama.com,
+*.tanx.com
+
+[Script]
+# 支付宝广告综合屏蔽脚本
+enable = true
+
+alipay-ad-blocker = type=http-request,pattern=^https?://.*\.(alipay|alibaba|taobao|1688|alimama)\.(com|net)/.*,requires-body=true,timeout=30,max-size=0,script-path=https://github.com/TomCatXue/LoonAD/blob/main/AlipayAD.js,img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
+
+# 响应处理
+alipay-response-clean = type=http-response,pattern=^https?://.*\.(alipay|alibaba|taobao|1688)\.com/.*,requires-body=true,timeout=30,max-size=0,script-path=https://github.com/TomCatXue/LoonAD/blob/main/AlipayAD.js,img-url=shield.fill
+
+[Rule]
+# 强制规则（不受策略组影响）
+DOMAIN,ad.alipay.com,REJECT
+DOMAIN,ads.alipay.com,REJECT
+DOMAIN,advert.alipay.com,REJECT
+DOMAIN,admedia.alipay.com,REJECT
+DOMAIN,adpub.alipay.com,REJECT
+DOMAIN,dsp.alipay.com,REJECT
+DOMAIN,adx.alipay.com,REJECT
+DOMAIN,ad.taobao.com,REJECT
+DOMAIN,adash.taobao.com,REJECT
+DOMAIN,ad.1688.com,REJECT
+DOMAIN,adsh.m.1688.com,REJECT
+
+# 关键词屏蔽
+DOMAIN-KEYWORD,adrlark,REJECT
+DOMAIN-KEYWORD,lark,REJECT
+DOMAIN-KEYWORD,adservice,REJECT
+DOMAIN-KEYWORD,adsystem,REJECT
+DOMAIN-KEYWORD,advertisement,REJECT
+DOMAIN-KEYWORD,promotion,REJECT
+DOMAIN-KEYWORD,distribute,REJECT
+
+# 流量位插件直接屏蔽
+URL-REGEX,^https?://.*plugin.*2021001154677005.*,REJECT
+URL-REGEX,^https?://.*plugin.*2021001131694653.*,REJECT
+URL-REGEX,^https?://.*resourceId=.*,REJECT
+URL-REGEX,^https?://.*lark/adrlark.*,REJECT
+URL-REGEX,^https?://.*dio0wg.*,REJECT
+
+# 支付宝核心域名直连（保证基本功能）
+DOMAIN-SUFFIX,alipay.com,DIRECT
+DOMAIN-SUFFIX,alipayobjects.com,DIRECT
+DOMAIN-SUFFIX,alipay.net,DIRECT
+DOMAIN-SUFFIX,alibaba.com,DIRECT
+DOMAIN-SUFFIX,taobao.com,DIRECT
+DOMAIN-SUFFIX,tmall.com,DIRECT
+DOMAIN-SUFFIX,1688.com,DIRECT
+
+[Panel]
+# 插件面板
+支付宝广告屏蔽 = script-name=alipay-ad-blocker,update-interval=86400
