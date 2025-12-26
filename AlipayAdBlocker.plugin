@@ -1,85 +1,60 @@
-[General]
-# 支付宝广告屏蔽插件 - 完整版 (By Assistant)
-# 严格依据支付宝官方流量位插件文档制作，针对灯火平台、流量位插件等。
-# 更新时间：2024-01-10
-# 图标：https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
+#!name=Alipay MiniProgram AdBlock (Switchable · Stable)
+#!desc=支付宝小程序去广告｜可开关｜稳定版（需要开启 MITM）
+#!author=TomCatXue
+#!icon=https://gw.alipayobjects.com/zos/rmsportal/UTjFYEzMSYVwzxIGVhMu.png
+#!version=1.3.2
 
-name = 支付宝广告屏蔽完整版
-desc = 屏蔽支付宝小程序所有广告（灯火/流量位插件/淘宝联盟/1688）。基于官方文档深度定制。
-author = Assistant
-version = 3.0.0
-icon = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
-update = 2024-01-10
+# ==================================================
+# 参数（开关）
+# ==================================================
+[Argument]
+block_splash = true
+block_interstitial = true
+block_feed = true
+block_task = true
+block_reward = false
 
-#################################################
-# 核心配置：MITM主机名（解决“不生效”的关键）
-#################################################
-[MITM]
-enable = true
-# 【关键】必须包含以下主机名，脚本才能解密和拦截支付宝域名的HTTPS请求
-hostname = 
-# 支付宝核心域名（覆盖小程序、插件、广告请求）
-*.alipay.com,
-*.alipayobjects.com,
-alipaycdn.net,
-*.alipay.net,
-# 阿里系广告及数据域名（覆盖灯火、淘宝联盟等）
-*.alibaba.com,
-*.taobao.com,
-*.tmall.com,
-*.alicdn.com,
-*.mmstat.com,
-*.amap.com,
-*.alimama.com,
-*.tanx.com,
-# 1688相关域名
-*.1688.com
-
-#################################################
-# 核心配置：脚本（处理逻辑）
-#################################################
+# ==================================================
+# 脚本
+# ==================================================
 [Script]
-enable = true
+alipay_adblock = type=http-response,script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/refs/heads/main/AlipayAD.js,requires-body=true,timeout=10,argument=block_splash,block_interstitial,block_feed,block_task,block_reward,tag=Alipay AdBlock Core
 
-# 综合请求拦截脚本 - 处理广告请求
-# 【关键】使用宽泛的pattern确保拦截到“隐藏”的API请求
-alipad-request = type=http-request,pattern=^https?:\/\/(.*\.)?(alipay|alibaba|taobao|tmall|1688|amap)\.(com|net)\/.*,requires-body=true,timeout=30,max-size=0,script-path=https://github.com/TomCatXue/LoonAD/blob/main/AlipayAD.js?t=20240110,img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Alipay.png
-
-# 综合响应处理脚本 - 清理返回数据中的广告
-alipad-response = type=http-response,pattern=^https?:\/\/(.*\.)?(alipay|alibaba|taobao|tmall|1688)\.com\/.*,requires-body=true,timeout=30,max-size=0,script-path=https://github.com/TomCatXue/LoonAD/blob/main/AlipayAD.js?t=20240110,img-url=shield.fill
-
-#################################################
-# 核心配置：规则（直接拒绝已知广告域名）
-#################################################
+# ==================================================
+# 规则
+# ==================================================
 [Rule]
-# 1. 直接屏蔽文档中提到的灯火广告平台等核心广告域名（强制生效）
-DOMAIN,ad.alipay.com,REJECT
-DOMAIN,ads.alipay.com,REJECT
-DOMAIN,advert.alipay.com,REJECT
-DOMAIN,admedia.alipay.com,REJECT
-DOMAIN,adpub.alipay.com,REJECT
-DOMAIN,dsp.alipay.com,REJECT
-DOMAIN,adx.alipay.com,REJECT
-DOMAIN-KEYWORD,adrlark,REJECT
-DOMAIN,ad.taobao.com,REJECT
-DOMAIN,adash.taobao.com,REJECT
-DOMAIN,ad.1688.com,REJECT
-DOMAIN,adsh.m.1688.com,REJECT
 
-# 2. 使用正则精准打击官方文档中的“流量位插件ID”（最有效规则）
-URL-REGEX,^https?:\/\/.*plugin.*2021001154677005.*,REJECT
-URL-REGEX,^https?:\/\/.*plugin.*2021001131694653.*,REJECT
-# 屏蔽包含“资源位ID”的请求
-URL-REGEX,^https?:\/\/.*[?&]resourceId=.*,REJECT
-# 屏蔽灯火平台特定路径
-URL-REGEX,^https?:\/\/.*(lark\/adrlark|dio0wg).*,REJECT
+# —— 开屏 / 插屏
+DOMAIN,amdc.alipay.com,alipay_adblock
+DOMAIN,adash.m.taobao.com,alipay_adblock
+DOMAIN,adashx.m.taobao.com,alipay_adblock
 
-# 3. 放行支付宝核心业务域名，确保支付、扫码等基础功能正常
-DOMAIN-SUFFIX,alipay.com,DIRECT
-DOMAIN-SUFFIX,alipayobjects.com,DIRECT
-DOMAIN-SUFFIX,alipay.net,DIRECT
-# 最终兜底规则（GLOBAL策略需根据你的Loon主配置调整）
-FINAL,PROXY
+# —— 信息流 / 推荐
+DOMAIN,render.alipay.com,alipay_adblock
+DOMAIN,mss.alipay.com,alipay_adblock
 
-[Panel]
-支付宝广告拦截 = script-name=alipad-request,update-interval=86400
+# —— 广告调度
+DOMAIN-SUFFIX,tanx.com,alipay_adblock
+DOMAIN-SUFFIX,alimama.com,alipay_adblock
+
+# —— 任务 / 统计
+DOMAIN-SUFFIX,mmstat.com,alipay_adblock
+
+# —— 激励广告素材（可选）
+DOMAIN,video.alicdn.com,REJECT
+DOMAIN,gw.alicdn.com,REJECT
+DOMAIN,img.alicdn.com,REJECT
+
+# ==================================================
+# MITM（关键）
+# ==================================================
+[MITM]
+hostname = amdc.alipay.com,
+           adash.m.taobao.com,
+           adashx.m.taobao.com,
+           render.alipay.com,
+           mss.alipay.com,
+           *.tanx.com,
+           *.alimama.com,
+           *.mmstat.com
