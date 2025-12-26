@@ -1,9 +1,9 @@
-#!name = 支付宝小程序去广告 (Switchable v2.0)
-#!desc = 屏蔽支付宝广告API和小程序流量位插件，支持多模块独立开关控制
+#!name = 支付宝小程序去广告 (Full Protection v5.0)
+#!desc = 全面屏蔽支付宝各类广告组件和API，支持模块化独立开关控制
 #!openUrl = https://apps.apple.com/app/id333206289
 #!author = TomCatXue & 可莉🅥[https://gitlab.com/lodepuly/vpn_tool/-/blob/master/README.md]
-#!raw-url = https://raw.githubusercontent.com/TomCatXue/LoonAD/main/AlipayMiniProgramAdBlock.plugin
-#!tag = 去广告,支付宝
+#!raw-url = https://raw.githubusercontent.com/TomCatXue/LoonAD/main/AlipayFullAdBlock.plugin
+#!tag = 去广告,支付宝,全面屏蔽
 #!system = iOS
 #!system_version = 14.0
 #!loon_version = 3.2.1(749)
@@ -12,7 +12,7 @@
 #!date = 2024-09-27 22:18:09
 
 # ==================================================
-# 参数配置区（开关控制）- 每个广告模块独立开关
+# 参数配置区（分类开关控制）
 # ==================================================
 [Argument]
 
@@ -20,177 +20,259 @@
 主开关 = true
 
 # ===== 广告API模块开关 =====
-广告代理商投放数据查询 = true
-广告投放数据通用查询 = true
-广告商家指标查询 = true
-自建推广页相关 = true
-任务广告状态查询 = true
+广告数据查询API = true      # alipay.data.dataservice.ad.*
+广告营销活动API = true      # alipay.marketing.* / commerce.operation.*
 
-# ===== 小程序流量位模块开关 =====
-小程序插件屏蔽 = true
-小程序流量位屏蔽 = true
-AMS插件系统屏蔽 = true
+# ===== 广告组件分类开关 =====
+## 1. 任务广告组件 (Task Ad)
+任务广告屏蔽 = true          # xlightPlugin/createTaskAd
+任务状态查询屏蔽 = true      # xlight.task.query
+
+## 2. 激励广告组件 (Rewarded Ad)  
+激励视频广告屏蔽 = true      # 15s视频广告
+商品信息流广告屏蔽 = true    # 30s信息流广告
+
+## 3. 封面广告组件 (Cover Ad)
+封面广告屏蔽 = true          # 首页/开屏封面广告
+
+## 4. 信息流广告组件 (Feeds Ad)
+信息流广告屏蔽 = true        # ad-feeds组件
+灯火平台插件屏蔽 = true      # xlightPlugin/feeds
+
+## 5. 图文广告组件 (Graphic Ad)
+图文广告屏蔽 = true          # <ad unit-id>组件
+
+## 6. 小程序原生组件
+小程序插件屏蔽 = true        # miniapp/plugin
+小程序流量位屏蔽 = true      # miniapp/traffic
+AMS插件系统屏蔽 = true       # ams/plugin
 
 # ===== 通用广告模块开关 =====
 开屏广告屏蔽 = true
-信息流广告屏蔽 = true
-营销活动屏蔽 = true
-激励广告屏蔽 = false
+插屏广告屏蔽 = true
+横幅广告屏蔽 = true
+弹窗广告屏蔽 = true
 
 # ===== 设置选项 =====
 日志记录 = false
-响应模式 = reject  # reject|empty|modify
+响应模式 = reject            # reject|empty|modify
+深度清理模式 = false         # 深度清理响应中的广告数据
 
 # ==================================================
 # 规则区
 # ==================================================
 [Rule]
 
-# 支付宝通用域名直连
+# 支付宝核心域名直连
 DOMAIN-SUFFIX,alipay.com,DIRECT
 DOMAIN-SUFFIX,alipayobjects.com,DIRECT
 DOMAIN-SUFFIX,alipaydn.com,DIRECT
 
-# 广告域名屏蔽（独立开关）
+# ===== 广告服务域名屏蔽 =====
+# 通用广告域名
 DOMAIN,ad.alipay.com,REJECT,enabled=主开关
 DOMAIN,ads.alipay.com,REJECT,enabled=主开关
 DOMAIN,advert.alipay.com,REJECT,enabled=主开关
 DOMAIN,promotion.alipay.com,REJECT,enabled=主开关
 
-# 小程序相关域名屏蔽
+# 任务广告相关域名
+DOMAIN,xlight.alipay.com,REJECT,enabled=任务广告屏蔽
+DOMAIN,*.xlight.alipay.com,REJECT,enabled=任务广告屏蔽
+
+# 激励广告相关域名
+DOMAIN,reward.alipay.com,REJECT,enabled=激励视频广告屏蔽
+DOMAIN,*.reward.alipay.com,REJECT,enabled=激励视频广告屏蔽
+DOMAIN,incentive.alipay.com,REJECT,enabled=激励视频广告屏蔽
+DOMAIN,*.incentive.alipay.com,REJECT,enabled=激励视频广告屏蔽
+
+# 商品信息流广告域名
+DOMAIN,productfeed.alipay.com,REJECT,enabled=商品信息流广告屏蔽
+DOMAIN,*.productfeed.alipay.com,REJECT,enabled=商品信息流广告屏蔽
+
+# 封面广告域名
+DOMAIN,cover.alipay.com,REJECT,enabled=封面广告屏蔽
+DOMAIN,*.cover.alipay.com,REJECT,enabled=封面广告屏蔽
+
+# 信息流广告域名
+DOMAIN,feeds.alipay.com,REJECT,enabled=信息流广告屏蔽
+DOMAIN,*.feeds.alipay.com,REJECT,enabled=信息流广告屏蔽
+
+# 图文广告域名
+DOMAIN,graphic.alipay.com,REJECT,enabled=图文广告屏蔽
+DOMAIN,*.graphic.alipay.com,REJECT,enabled=图文广告屏蔽
+
+# ===== 小程序相关域名屏蔽 =====
 DOMAIN,e.alipay.com,REJECT,enabled=小程序流量位屏蔽
 DOMAIN,mr.alipay.com,REJECT,enabled=小程序插件屏蔽
+DOMAIN,ams.alipay.com,REJECT,enabled=AMS插件系统屏蔽
+
+# ===== 广告服务商域名 =====
+DOMAIN-SUFFIX,tanx.com,REJECT,enabled=主开关
+DOMAIN-SUFFIX,alimama.com,REJECT,enabled=主开关
+DOMAIN-SUFFIX,mmstat.com,REJECT,enabled=主开关
 
 # ==================================================
-# 重写区（每个模块独立开关）
+# 重写区（按广告组件分类）
 # ==================================================
 [Rewrite]
 
-# ----- 模块1：广告代理商投放数据查询 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.agentreportdata\.query reject-dict,enabled=广告代理商投放数据查询
+# ==================== 广告API模块 ====================
+# 广告数据查询API (基础数据接口)
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.agentreportdata\.query reject-dict,enabled=广告数据查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportdata\.query reject-dict,enabled=广告数据查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportmetric\.query reject-dict,enabled=广告数据查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.promotepage\.batchquery reject-dict,enabled=广告数据查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.promotepage\.download reject-dict,enabled=广告数据查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\..* reject-dict,enabled=广告数据查询API
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-# ----- 模块2：广告投放数据通用查询 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportdata\.query reject-dict,enabled=广告投放数据通用查询
+# 广告营销活动API (营销相关接口)
+^https:\/\/[^\/]+\/alipay\.marketing\..* reject-dict,enabled=广告营销活动API
+^https:\/\/[^\/]+\/alipay\.commerce\.operation\..* reject-dict,enabled=广告营销活动API
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-# ----- 模块3：广告商家指标查询 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportmetric\.query reject-dict,enabled=广告商家指标查询
+# ==================== 任务广告组件模块 ====================
+# 任务广告状态查询API
+^https:\/\/[^\/]+\/alipay\.data\.dataservice\.xlight\.task\.query reject-dict,enabled=任务状态查询屏蔽
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-# ----- 模块4：自建推广页相关 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.promotepage\.batchquery reject-dict,enabled=自建推广页相关
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.promotepage\.download reject-dict,enabled=自建推广页相关
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# xlight插件相关接口
+^https:\/\/xlight\.alipay\.com\/.* reject-dict,enabled=任务广告屏蔽
+^https:\/\/[^\/]+\/xlight\/config reject-dict,enabled=任务广告屏蔽
+^https:\/\/[^\/]+\/xlight\/task\/list reject-dict,enabled=任务广告屏蔽
+^https:\/\/[^\/]+\/xlight\/task\/finish reject-dict,enabled=任务广告屏蔽
+^https:\/\/[^\/]+\/xlight\/task\/status reject-dict,enabled=任务广告屏蔽
+hostname = xlight.alipay.com, *.alipay.com
 
-# ----- 模块5：任务广告状态查询 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.xlight\.task\.query reject-dict,enabled=任务广告状态查询
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# ==================== 激励广告组件模块 ====================
+# 激励视频广告 (15s视频广告)
+^https:\/\/reward\.alipay\.com\/.* reject-dict,enabled=激励视频广告屏蔽
+^https:\/\/[^\/]+\/incentive\/config reject-dict,enabled=激励视频广告屏蔽
+^https:\/\/[^\/]+\/incentive\/video reject-dict,enabled=激励视频广告屏蔽
+^https:\/\/[^\/]+\/incentive\/reward reject-dict,enabled=激励视频广告屏蔽
+^https:\/\/[^\/]+\/incentive\/close reject-dict,enabled=激励视频广告屏蔽
+hostname = reward.alipay.com, incentive.alipay.com, *.alipay.com
 
-# ----- 模块6：通用广告API模式 -----
-^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\..* reject-dict,enabled=主开关
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# 商品信息流广告 (30s信息流广告)
+^https:\/\/productfeed\.alipay\.com\/.* reject-dict,enabled=商品信息流广告屏蔽
+^https:\/\/[^\/]+\/productfeed\/list reject-dict,enabled=商品信息流广告屏蔽
+^https:\/\/[^\/]+\/productfeed\/detail reject-dict,enabled=商品信息流广告屏蔽
+hostname = productfeed.alipay.com, *.alipay.com
 
-# ----- 模块7：营销相关API -----
-^https:\/\/[^\/]+\/alipay\.marketing\..* reject-dict,enabled=营销活动屏蔽
-^https:\/\/[^\/]+\/alipay\.commerce\.operation\..* reject-dict,enabled=营销活动屏蔽
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# ==================== 封面广告组件模块 ====================
+^https:\/\/cover\.alipay\.com\/.* reject-dict,enabled=封面广告屏蔽
+^https:\/\/[^\/]+\/cover\/config reject-dict,enabled=封面广告屏蔽
+^https:\/\/[^\/]+\/cover\/show reject-dict,enabled=封面广告屏蔽
+hostname = cover.alipay.com, *.alipay.com
 
-# ----- 模块8：小程序插件系统 -----
+# ==================== 信息流广告组件模块 ====================
+# ad-feeds组件
+^https:\/\/feeds\.alipay\.com\/.* reject-dict,enabled=信息流广告屏蔽
+^https:\/\/[^\/]+\/feeds\/list reject-dict,enabled=信息流广告屏蔽
+^https:\/\/[^\/]+\/feeds\/render reject-dict,enabled=信息流广告屏蔽
+hostname = feeds.alipay.com, *.alipay.com
+
+# 灯火平台插件 (xlightPlugin/feeds)
+^https:\/\/[^\/]+\/plugin\/xlightPlugin\/feeds reject-dict,enabled=灯火平台插件屏蔽
+^https:\/\/[^\/]+\/xlightPlugin\/feeds reject-dict,enabled=灯火平台插件屏蔽
+hostname = *.alipay.com, *.alipayobjects.com
+
+# ==================== 图文广告组件模块 ====================
+^https:\/\/graphic\.alipay\.com\/.* reject-dict,enabled=图文广告屏蔽
+^https:\/\/[^\/]+\/graphic\/load reject-dict,enabled=图文广告屏蔽
+^https:\/\/[^\/]+\/graphic\/click reject-dict,enabled=图文广告屏蔽
+hostname = graphic.alipay.com, *.alipay.com
+
+# ==================== 小程序原生组件模块 ====================
 ^https:\/\/[^\/]+\/miniapp\/plugin\/.* reject-dict,enabled=小程序插件屏蔽
 hostname = *.alipay.com, *.alipayobjects.com
 
-# ----- 模块9：小程序流量位 -----
 ^https:\/\/[^\/]+\/miniapp\/traffic\/.* reject-dict,enabled=小程序流量位屏蔽
 hostname = *.alipay.com, *.alipayobjects.com
 
-# ----- 模块10：AMS插件系统 -----
 ^https:\/\/[^\/]+\/ams\/plugin\/.* reject-dict,enabled=AMS插件系统屏蔽
 hostname = *.alipay.com, *.alipayobjects.com
 
-# ----- 模块11：开屏广告相关 -----
+# ==================== 通用广告模块 ====================
+# 开屏广告
 ^https:\/\/amdc\.alipay\.com\/.* reject-dict,enabled=开屏广告屏蔽
 hostname = amdc.alipay.com
 
+# 阿里妈妈广告服务
 ^https:\/\/adash\.m\.taobao\.com\/.* reject-dict,enabled=开屏广告屏蔽
-hostname = adash.m.taobao.com
-
 ^https:\/\/adashx\.m\.taobao\.com\/.* reject-dict,enabled=开屏广告屏蔽
-hostname = adashx.m.taobao.com
+hostname = adash.m.taobao.com, adashx.m.taobao.com
 
-^https:\/\/render\.alipay\.com\/.* reject-dict,enabled=开屏广告屏蔽
+# 广告渲染
+^https:\/\/render\.alipay\.com\/.* reject-dict,enabled=主开关
 hostname = render.alipay.com
 
-# ----- 模块12：信息流广告 -----
+# 信息流服务
 ^https:\/\/mss\.alipay\.com\/.* reject-dict,enabled=信息流广告屏蔽
 hostname = mss.alipay.com
 
-# ----- 模块13：激励广告素材 -----
-^https:\/\/video\.alicdn\.com\/.* reject-dict,enabled=激励广告屏蔽
-hostname = video.alicdn.com
+# 广告素材
+^https:\/\/video\.alicdn\.com\/.* reject-dict,enabled=主开关
+^https:\/\/gw\.alicdn\.com\/.* reject-dict,enabled=主开关
+^https:\/\/img\.alicdn\.com\/.* reject-dict,enabled=主开关
+hostname = video.alicdn.com, gw.alicdn.com, img.alicdn.com
 
-^https:\/\/gw\.alicdn\.com\/.* reject-dict,enabled=激励广告屏蔽
-hostname = gw.alicdn.com
+# ==================== 广告组件配置 ====================
+# 广告组件配置加载
+^https:\/\/[^\/]+\/ad\/config reject-dict,enabled=主开关
+^https:\/\/[^\/]+\/ad\/component\/config reject-dict,enabled=主开关
+hostname = *.alipay.com
 
-# ----- 模块14：广告调度服务 -----
-^https:\/\/(.+)\.tanx\.com\/.* reject-dict,enabled=主开关
-hostname = *.tanx.com
-
-^https:\/\/(.+)\.alimama\.com\/.* reject-dict,enabled=主开关
-hostname = *.alimama.com
-
-# ----- 模块15：广告统计 -----
-^https:\/\/(.+)\.mmstat\.com\/.* reject-dict,enabled=主开关
-hostname = *.mmstat.com
-
-# ----- 模块16：蚂蚁认证相关 -----
-^https:\/\/antcert\.antgroup\.com\/.* reject-dict,enabled=营销活动屏蔽
-hostname = antcert.antgroup.com
-
-^https:\/\/certify\.alipay\.com\/.* reject-dict,enabled=营销活动屏蔽
-hostname = certify.alipay.com
+# 广告SDK加载
+^https:\/\/[^\/]+\/ad\/sdk reject-dict,enabled=主开关
+^https:\/\/[^\/]+\/sdk\/ad reject-dict,enabled=主开关
+hostname = *.alipay.com
 
 # ==================================================
-# 脚本区（高级处理）
+# 脚本区（高级处理，按组件类型）
 # ==================================================
 [Script]
 
-# ----- 核心广告API处理脚本 -----
-http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.agentreportdata\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdBlock.js, tag=广告代理商投放数据屏蔽, argument=module=agentreport&logging=日志记录&mode=响应模式, timeout=30, enabled=广告代理商投放数据查询
+# ===== 广告API处理脚本 =====
+http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.agentreportdata\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdAPI.js, tag=广告数据查询屏蔽, argument=type=agentreport&logging=日志记录&mode=响应模式&deep=深度清理模式, timeout=30, enabled=广告数据查询API
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportdata\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdBlock.js, tag=广告投放数据通用屏蔽, argument=module=reportdata&logging=日志记录&mode=响应模式, timeout=30, enabled=广告投放数据通用查询
+http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportdata\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdAPI.js, tag=广告投放数据屏蔽, argument=type=reportdata&logging=日志记录&mode=响应模式&deep=深度清理模式, timeout=30, enabled=广告数据查询API
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.reportmetric\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdBlock.js, tag=广告商家指标屏蔽, argument=module=reportmetric&logging=日志记录&mode=响应模式, timeout=30, enabled=广告商家指标查询
+http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.xlight\.task\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayTaskAd.js, tag=任务广告状态屏蔽, argument=type=taskquery&logging=日志记录&mode=响应模式, timeout=30, enabled=任务状态查询屏蔽
 hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
 
-http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.ad\.promotepage requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdBlock.js, tag=自建推广页屏蔽, argument=module=promotepage&logging=日志记录&mode=响应模式, timeout=30, enabled=自建推广页相关
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# ===== 任务广告组件脚本 =====
+http-response ^https:\/\/xlight\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayTaskAd.js, tag=任务广告组件屏蔽, argument=type=xlight&logging=日志记录&mode=响应模式, timeout=30, enabled=任务广告屏蔽
+hostname = xlight.alipay.com
 
-http-response ^https:\/\/[^\/]+\/alipay\.data\.dataservice\.xlight\.task\.query requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayAdBlock.js, tag=任务广告状态屏蔽, argument=module=taskquery&logging=日志记录&mode=响应模式, timeout=30, enabled=任务广告状态查询
-hostname = openapi.alipay.com, open.alipay.com, mapi.alipay.com
+# ===== 激励广告组件脚本 =====
+http-response ^https:\/\/reward\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayRewardedAd.js, tag=激励视频广告屏蔽, argument=type=rewarded&logging=日志记录&mode=响应模式, timeout=30, enabled=激励视频广告屏蔽
+hostname = reward.alipay.com
 
-# ----- 小程序流量位处理脚本 -----
-http-response ^https:\/\/[^\/]+\/miniapp\/plugin\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayMiniPlugin.js, tag=小程序插件屏蔽, argument=type=plugin&logging=日志记录, timeout=30, enabled=小程序插件屏蔽
-hostname = *.alipay.com, *.alipayobjects.com
+http-response ^https:\/\/productfeed\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayRewardedAd.js, tag=商品信息流广告屏蔽, argument=type=productfeed&logging=日志记录&mode=响应模式, timeout=30, enabled=商品信息流广告屏蔽
+hostname = productfeed.alipay.com
 
-http-response ^https:\/\/[^\/]+\/miniapp\/traffic\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayMiniPlugin.js, tag=小程序流量位屏蔽, argument=type=traffic&logging=日志记录, timeout=30, enabled=小程序流量位屏蔽
-hostname = *.alipay.com, *.alipayobjects.com
+# ===== 信息流广告组件脚本 =====
+http-response ^https:\/\/feeds\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayFeedsAd.js, tag=信息流广告屏蔽, argument=type=feeds&logging=日志记录&mode=响应模式, timeout=30, enabled=信息流广告屏蔽
+hostname = feeds.alipay.com
 
-http-response ^https:\/\/[^\/]+\/ams\/plugin\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayMiniPlugin.js, tag=AMS插件屏蔽, argument=type=ams&logging=日志记录, timeout=30, enabled=AMS插件系统屏蔽
-hostname = *.alipay.com, *.alipayobjects.com
+# ===== 封面广告脚本 =====
+http-response ^https:\/\/cover\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayCoverAd.js, tag=封面广告屏蔽, argument=type=cover&logging=日志记录&mode=响应模式, timeout=30, enabled=封面广告屏蔽
+hostname = cover.alipay.com
 
-# ----- 开屏广告处理脚本 -----
-http-response ^https:\/\/amdc\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipaySplash.js, tag=开屏广告屏蔽, argument=type=splash&logging=日志记录, timeout=30, enabled=开屏广告屏蔽
+# ===== 图文广告脚本 =====
+http-response ^https:\/\/graphic\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayGraphicAd.js, tag=图文广告屏蔽, argument=type=graphic&logging=日志记录&mode=响应模式, timeout=30, enabled=图文广告屏蔽
+hostname = graphic.alipay.com
+
+# ===== 开屏广告脚本 =====
+http-response ^https:\/\/amdc\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipaySplashAd.js, tag=开屏广告屏蔽, argument=type=splash&logging=日志记录&mode=响应模式, timeout=30, enabled=开屏广告屏蔽
 hostname = amdc.alipay.com
 
-http-response ^https:\/\/adash\.(m|wxs)\.taobao\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipaySplash.js, tag=阿里妈妈广告屏蔽, argument=type=alimama&logging=日志记录, timeout=30, enabled=开屏广告屏蔽
-hostname = adash.m.taobao.com, adashx.m.taobao.com
-
-# ----- 信息流广告处理脚本 -----
-http-response ^https:\/\/mss\.alipay\.com\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayFeedAd.js, tag=信息流广告屏蔽, argument=type=feed&logging=日志记录, timeout=30, enabled=信息流广告屏蔽
-hostname = mss.alipay.com
+# ===== 小程序插件脚本 =====
+http-response ^https:\/\/[^\/]+\/miniapp\/plugin\/.* requires-body=true, script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/Scripts/AlipayMiniPlugin.js, tag=小程序插件屏蔽, argument=type=miniapp&logging=日志记录&mode=响应模式, timeout=30, enabled=小程序插件屏蔽
+hostname = *.alipay.com, *.alipayobjects.com
 
 # ==================================================
 # MITM配置（完整主机名列表）
@@ -205,26 +287,39 @@ hostname =
     *.alipayobjects.com,
     *.alipaydn.com,
     
-    # 广告相关域名
-    ad.alipay.com,
-    ads.alipay.com,
-    advert.alipay.com,
-    promotion.alipay.com,
+    # 广告API域名
     amdc.alipay.com,
     mss.alipay.com,
     render.alipay.com,
     
+    # 广告组件专用域名
+    xlight.alipay.com,
+    reward.alipay.com,
+    incentive.alipay.com,
+    productfeed.alipay.com,
+    cover.alipay.com,
+    feeds.alipay.com,
+    graphic.alipay.com,
+    
+    # 广告服务域名
+    ad.alipay.com,
+    ads.alipay.com,
+    advert.alipay.com,
+    promotion.alipay.com,
+    
     # 小程序相关
     e.alipay.com,
     mr.alipay.com,
+    ams.alipay.com,
     
-    # 阿里系广告域名
+    # 阿里系域名
     *.taobao.com,
     video.alicdn.com,
     gw.alicdn.com,
     img.alicdn.com,
+    *.alicdn.com,
     
-    # 广告服务商
+    # 第三方广告服务
     *.tanx.com,
     *.alimama.com,
     *.mmstat.com,
@@ -234,9 +329,10 @@ hostname =
     certify.alipay.com,
     antcert.antgroup.com,
     
-    # 其他可能域名
+    # CDN和资源域名
     *.tbcdn.cn,
     *.tanxlog.istreamsche.com,
-    *.afp.alicdn.com
+    *.afp.alicdn.com,
+    *.cdn.alibaba.com
 
 # 注：需要开启Loon的MITM功能并安装对应证书
