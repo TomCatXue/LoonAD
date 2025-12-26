@@ -2,7 +2,7 @@
 #!desc=支付宝小程序去广告｜可开关｜稳定版（需要开启 MITM）
 #!author=TomCatXue
 #!icon=https://gw.alipayobjects.com/zos/rmsportal/UTjFYEzMSYVwzxIGVhMu.png
-#!version=1.3.3
+#!version=1.3.4
 
 # ==================================================
 # 参数（开关）
@@ -21,33 +21,33 @@ block_reward = false
 alipay_adblock = type=http-response,script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/AlipayAD.js,requires-body=true,timeout=10,argument=block_splash,block_interstitial,block_feed,block_task,block_reward,tag=Alipay AdBlock Core
 
 # ==================================================
-# 规则
+# 规则（⚠️ Loon 必须用 SCRIPT）
 # ==================================================
 [Rule]
 
 # —— 开屏 / 插屏
-DOMAIN,amdc.alipay.com,alipay_adblock
-DOMAIN,adash.m.taobao.com,alipay_adblock
-DOMAIN,adashx.m.taobao.com,alipay_adblock
+DOMAIN,amdc.alipay.com,SCRIPT,alipay_adblock
+DOMAIN,adash.m.taobao.com,SCRIPT,alipay_adblock
+DOMAIN,adashx.m.taobao.com,SCRIPT,alipay_adblock
 
 # —— 信息流 / 推荐
-DOMAIN,render.alipay.com,alipay_adblock
-DOMAIN,mss.alipay.com,alipay_adblock
+DOMAIN,render.alipay.com,SCRIPT,alipay_adblock
+DOMAIN,mss.alipay.com,SCRIPT,alipay_adblock
 
 # —— 广告调度
-DOMAIN-SUFFIX,tanx.com,alipay_adblock
-DOMAIN-SUFFIX,alimama.com,alipay_adblock
+DOMAIN-SUFFIX,tanx.com,SCRIPT,alipay_adblock
+DOMAIN-SUFFIX,alimama.com,SCRIPT,alipay_adblock
 
 # —— 任务 / 统计
-DOMAIN-SUFFIX,mmstat.com,alipay_adblock
+DOMAIN-SUFFIX,mmstat.com,SCRIPT,alipay_adblock
 
-# —— 激励广告素材（可选，容易误杀）
+# —— 激励广告素材（可选）
 DOMAIN,video.alicdn.com,REJECT
 DOMAIN,gw.alicdn.com,REJECT
 DOMAIN,img.alicdn.com,REJECT
 
 # ==================================================
-# MITM（关键）
+# MITM（必须）
 # ==================================================
 [MITM]
 hostname = amdc.alipay.com,
