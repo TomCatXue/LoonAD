@@ -2,7 +2,7 @@
 #!desc=支付宝小程序去广告｜可开关｜稳定版（需要开启 MITM）
 #!author=TomCatXue
 #!icon=https://gw.alipayobjects.com/zos/rmsportal/UTjFYEzMSYVwzxIGVhMu.png
-#!version=1.3.2
+#!version=1.3.3
 
 # ==================================================
 # 参数（开关）
@@ -18,7 +18,7 @@ block_reward = false
 # 脚本
 # ==================================================
 [Script]
-alipay_adblock = type=http-response,script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/refs/heads/main/AlipayAD.js,requires-body=true,timeout=10,argument=block_splash,block_interstitial,block_feed,block_task,block_reward,tag=Alipay AdBlock Core
+alipay_adblock = type=http-response,script-path=https://raw.githubusercontent.com/TomCatXue/LoonAD/main/AlipayAD.js,requires-body=true,timeout=10,argument=block_splash,block_interstitial,block_feed,block_task,block_reward,tag=Alipay AdBlock Core
 
 # ==================================================
 # 规则
@@ -41,7 +41,7 @@ DOMAIN-SUFFIX,alimama.com,alipay_adblock
 # —— 任务 / 统计
 DOMAIN-SUFFIX,mmstat.com,alipay_adblock
 
-# —— 激励广告素材（可选）
+# —— 激励广告素材（可选，容易误杀）
 DOMAIN,video.alicdn.com,REJECT
 DOMAIN,gw.alicdn.com,REJECT
 DOMAIN,img.alicdn.com,REJECT
